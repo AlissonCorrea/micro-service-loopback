@@ -24,15 +24,22 @@ export class RabbitmqServer extends Context implements Server {
         const queue: AssertQueue = await channel.assertQueue('transaction-queue');
         // const exchange: AssertExchange = await channel.assertExchange('amq.direct', 'direct');
 
-        channel.publish('amq.direct', 'transaction-routing-key', Buffer.from('teste'));
+        // channel.publish('amq.direct', 'transaction-routing-key', Buffer.from('teste'));
 
         //enviar dados para a fila
-        const result = channel.sendToQueue('transaction-queue', Buffer.from('Olá mundo!'))
+        // const result = channel.sendToQueue('transaction-queue', Buffer.from('Olá mundo!'))
 
         //consumir itens da fila
-        // channel.consume(queue.queue, (message)=>{
-        //     console.log(message?.content.toString())
-        // });
+        channel.consume(queue.queue, (message)=>{
+            console.log(message?.content.toString())
+        });
+
+        const queueCustomer: AssertQueue = await channel.assertQueue('customer-queue');
+
+        channel.consume(queueCustomer.queue, (message)=>{
+            console.log(message?.content.toString())
+        });
+
         // console.log(result);
     }
 
